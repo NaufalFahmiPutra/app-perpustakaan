@@ -1,3 +1,28 @@
+# Perpustakaan Kampus
+
+Aplikasi Laravel 12 untuk petugas perpustakaan: mengelola koleksi buku, data anggota, dan peminjaman.
+
+## Menjalankan di komputer sendiri
+
+bash
+composer create-project laravel/laravel app-perpustakaan
+cd app-perpustakaan
+
+
+Salin .env.example jadi .env, isi DB_DATABASE=db_perpustakaan, lalu:
+
+bash
+php artisan key:generate
+php artisan serve
+
+
+Buka http://127.0.0.1:8000 — halaman default Laravel harus muncul.
+
+## Model, View, Controller
+
+Model adalah bagian yang berhubungan dengan data (tabel, query, aturan bisnis). View hanya merakit tampilan yang dilihat di browser. Controller menerima request dari user, mengambil data lewat Model, lalu meneruskannya ke View. Saya memahaminya seperti tiga fungsi terpisah dalam satu program: penyimpan data, pengolah request, dan pembuat output — bukan satu file yang mengerjakan semuanya.
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
