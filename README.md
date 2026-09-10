@@ -1,4 +1,4 @@
-# Perpustakaan Kampus
+# APP Perpustakaan
 
 Aplikasi Laravel 12 untuk petugas perpustakaan: mengelola koleksi buku, data anggota, dan peminjaman.
 
