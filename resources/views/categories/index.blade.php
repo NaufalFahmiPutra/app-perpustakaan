@@ -12,11 +12,12 @@
     </style>
 </head>
 <body>
-    <h1>Daftar Kategori</h1>
+@extends('layouts.app')
 
-    @if (session('success'))
-        <div class="success">{{ session('success') }}</div>
-    @endif
+@section('title', 'Daftar Kategori')
+
+@section('content')
+    <h1>Daftar Kategori</h1>
 
     <p><a href="{{ route('categories.create') }}" class="btn">+ Tambah Kategori</a></p>
 
@@ -38,7 +39,7 @@
                     <td>
                         <a href="{{ route('categories.edit', $category['id']) }}">Edit</a>
                         |
-                        <form style="display:inline" action="{{ route('categories.destroy', $category['id']) }}" method="POST">
+                        <form class="inline" action="{{ route('categories.destroy', $category['id']) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Hapus</button>
@@ -54,5 +55,6 @@
     </table>
 
     <p><em>Catatan: data di atas masih data dummy (array statis di Controller), belum dari database. Migration &amp; Model Eloquent baru dibuat di Pertemuan 5.</em></p>
-</body>
+@endsection
+
 </html>

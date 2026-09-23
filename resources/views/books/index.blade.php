@@ -13,11 +13,13 @@
     </style>
 </head>
 <body>
-    <h1>Daftar Buku</h1>
+    {{-- File: resources/views/books/index.blade.php --}}
+@extends('layouts.app')
 
-    @if (session('success'))
-        <div class="success">{{ session('success') }}</div>
-    @endif
+@section('title', 'Daftar Buku')
+
+@section('content')
+    <h1>Daftar Buku</h1>
 
     <p><a href="{{ route('books.create') }}" class="btn">+ Tambah Buku</a></p>
 
@@ -65,5 +67,6 @@
     </table>
 
     <p><em>Catatan: data di atas masih data dummy (array statis di Controller), belum dari database. Migration &amp; Model Eloquent baru dibuat di Pertemuan 5.</em></p>
+@endsection
 </body>
 </html>
