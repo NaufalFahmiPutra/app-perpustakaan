@@ -39,6 +39,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit">Hapus</button>
+                        </form>
                     </td>
                 </tr>
             @empty
