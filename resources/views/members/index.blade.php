@@ -6,6 +6,8 @@
     <h1>Daftar Anggota</h1>
 
     <p><a href="{{ route('members.create') }}" class="btn">+ Tambah Anggota</a></p>
+    <form method="GET" action="{{ route('members.index') }}"> 
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama anggota">     <button type="submit">Cari</button>
 
     <table>
         <thead>
@@ -47,5 +49,5 @@
         </tbody>
     </table>
 
-    {{ $members->links() }}
+    {{ $members->appends(request()->query())->links() }}
 @endsection
