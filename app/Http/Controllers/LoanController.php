@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Models\Member;
@@ -114,5 +115,17 @@ class LoanController extends Controller
 
         return redirect()->route('loans.index')
             ->with('success', 'Transaksi peminjaman berhasil dihapus.');
+    }
+
+   public function kembalikan(string $id)
+    {
+        $loan = Loan::findOrFail($id);
+
+        $loan->update([
+            'status' => 'dikembalikan',
+            'tanggal_dikembalikan' => now()->toDateString(),
+        ]);
+
+        return redirect('/loans')->with('success', 'Buku telah dikembalikan.');
     }
 }

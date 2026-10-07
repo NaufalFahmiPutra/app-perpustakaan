@@ -22,6 +22,10 @@
         .error { color: #b91c1c; font-size: 14px; margin-top: 4px; }
         form .btn { margin-top: 20px; }
         footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; margin-top: 40px; }
+        .status { border-radius: 10px; padding: 6px;}
+        .dikembalikan { background-color: #d1fae5; color: #065f46; }
+        .dipinjam { background-color: #fef3c7;color: #92400e; }
+        .terlambat { background-color: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
