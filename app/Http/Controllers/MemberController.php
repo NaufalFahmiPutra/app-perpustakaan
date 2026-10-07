@@ -42,10 +42,11 @@ class MemberController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        $members = Member::findOrFail($id);
-        return view('members.show', compact('members'));
-    }
+{
+    $member = Member::with(['loans.loanItems.book', 'loans.user'])->findOrFail($id);
+
+    return view('members.show', compact('member'));
+}
 
     /**
      * Show the form for editing the specified resource.
