@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Models\Member;
 use App\Models\Book;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
 class LoanController extends Controller
 {
     /**
@@ -18,6 +20,30 @@ class LoanController extends Controller
 
         return view('loans.index', compact('loans'));
     }
+
+    // File: app/Http/Controllers/LoanController.php
+    public function report(Request $request)
+    {
+        $body = ['data' => [], 'meta' => null];
+
+        try {
+            $response = Http::get(config('services.internal_api.base_url') . '/api/loans', [
+                'page' => $request->query('page', 1),
+            ]);
+
+            if ($response->successful()) {
+                $body = $response->json();
+            }
+        } catch (ConnectionException $e) {
+            // Server internal API (port 8011) tidak bisa dihubungi - tabel laporan tampil kosong.
+        }
+
+        return view('loans.report', [
+            'loans' => $body['data'] ?? [],
+            'meta' => $body['meta'] ?? null,
+        ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -73,7 +99,7 @@ class LoanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-   public function edit(string $id)
+    public function edit(string $id)
     {
         $loan = Loan::with(['member', 'user', 'loanItems.book'])->findOrFail($id);
 
@@ -114,7 +140,7 @@ class LoanController extends Controller
             ->with('success', 'Transaksi peminjaman berhasil dihapus.');
     }
 
-   public function kembalikan(string $id)
+    public function kembalikan(string $id)
     {
         $loan = Loan::findOrFail($id);
 
