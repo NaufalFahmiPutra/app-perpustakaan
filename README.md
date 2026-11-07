@@ -1,84 +1,114 @@
-# APP Perpustakaan
+# Sistem Perpustakaan Digital Kampus
 
-Aplikasi Laravel 12 untuk petugas perpustakaan: mengelola koleksi buku, data anggota, dan peminjaman.
+Aplikasi manajemen perpustakaan berbasis Laravel 12 untuk mengelola buku, kategori, anggota, dan transaksi peminjaman. Dibangun bertahap selama satu semester sebagai project mata kuliah Pemrograman Framework.
 
-## Menjalankan di komputer sendiri
+## Fitur
 
-bash
-composer create-project laravel/laravel app-perpustakaan
+- CRUD Kategori, Buku, dan Anggota
+- Transaksi peminjaman dan pengembalian buku
+- Login/logout petugas dengan proteksi route (middleware `auth`)
+- Pembatasan akses berdasarkan role (menu Kategori khusus admin)
+- REST API untuk buku, anggota, peminjaman, dan statistik
+- Dashboard statistik dan laporan peminjaman yang mengonsumsi API internal
+
+## Kebutuhan Sistem
+
+- PHP >= 8.2
+- Composer
+- MySQL
+- Git
+
+## Cara Menjalankan di Komputer Lokal
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/[USERNAME]/app-perpustakaan.git
 cd app-perpustakaan
+```
 
+### 2. Install dependency
 
-Salin .env.example jadi .env, isi DB_DATABASE=db_perpustakaan, lalu:
+```bash
+composer install
+```
 
-bash
+### 3. Siapkan file `.env`
+
+```bash
+copy .env.example .env
 php artisan key:generate
-php artisan serve
+```
 
+(Di Mac/Linux, ganti `copy` dengan `cp`.)
 
-Buka http://127.0.0.1:8000 — halaman default Laravel harus muncul.
+Buka `.env`, lalu pastikan bagian ini sesuai:
 
-## Model, View, Controller
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=db_perpustakaan
+DB_USERNAME=root
+DB_PASSWORD=
 
-Model adalah bagian yang berhubungan dengan data (tabel, query, aturan bisnis). View hanya merakit tampilan yang dilihat di browser. Controller menerima request dari user, mengambil data lewat Model, lalu meneruskannya ke View. Saya memahaminya seperti tiga fungsi terpisah dalam satu program: penyimpan data, pengolah request, dan pembuat output — bukan satu file yang mengerjakan semuanya.
+APP_FAKER_LOCALE=id_ID
+INTERNAL_API_URL=http://127.0.0.1:8011
+```
 
+### 4. Buat database
 
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Buat database kosong bernama `db_perpustakaan` lewat phpMyAdmin atau MySQL.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 5. Migrasi dan isi data dummy
 
-## About Laravel
+```bash
+php artisan migrate:fresh --seed
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Perintah ini membuat seluruh tabel dan mengisi data contoh (5 kategori, 20 buku, 15 anggota, 10 peminjaman, 3 akun).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 6. Jalankan DUA server
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Project ini **wajib** menjalankan dua server sekaligus. Buka **dua terminal** di folder project:
 
-## Learning Laravel
+Terminal 1 (server utama, dibuka lewat browser):
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+php artisan serve --port=8000
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Terminal 2 (server khusus API internal):
 
-## Laravel Sponsors
+```bash
+php artisan serve --port=8011
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Kenapa dua?** Dashboard dan Laporan Peminjaman mengambil data lewat `Http::get()` ke `/api/...` milik aplikasi itu sendiri. Server `php artisan serve` hanya memproses satu request pada satu waktu. Kalau hanya ada satu server, request pertama menunggu balasan dari request kedua yang tidak pernah bisa diproses (deadlock). Server kedua di port 8011 menangani panggilan API itu. Jika server kedua tidak jalan, Dashboard menampilkan angka 0 dan Laporan tampil kosong.
 
-### Premium Partners
+### 7. Buka aplikasi
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Buka `http://127.0.0.1:8000` di browser.
 
-## Contributing
+## Akun Login
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@pens.ac.id | password |
+| Petugas | petugas1@pens.ac.id | password |
+| Petugas | petugas2@pens.ac.id | password |
 
-## Code of Conduct
+Menu **Kategori** hanya tampil dan bisa diakses oleh admin.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Endpoint REST API
 
-## Security Vulnerabilities
+Dokumentasi lengkap 11 endpoint (books, members, loans, stats) ada di [API.md](./API.md). Base URL: `http://127.0.0.1:8000/api`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Skenario Demo
 
-## License
+Langkah-langkah demo aplikasi ada di [DEMO.md](./DEMO.md).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Struktur Branch
+
+- `main`: versi stabil (hasil akhir)
+- `dev`: branch pengembangan harian
